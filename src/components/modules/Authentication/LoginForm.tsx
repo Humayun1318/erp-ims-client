@@ -185,7 +185,7 @@ export function LoginForm({
         {/* Google CTA */}
         <Button
           onClick={() =>
-            (window.location.href = `${config.baseUrl}/auth/google?redirect=/user`)
+            (window.location.href = `${config.baseUrl}/auth/google?redirect=/employee`)
           }
           type="button"
           variant="outline"

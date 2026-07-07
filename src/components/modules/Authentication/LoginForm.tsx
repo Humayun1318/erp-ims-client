@@ -80,10 +80,13 @@ export function LoginForm({
         });
 
         if ((res?.data?.user?.role as TRole) === role.manager) {
+          console.log("manager dukche", res?.data?.user?.role)
           navigate("/manager");
         } else if ((res?.data?.user?.role as TRole) === role.admin) {
+          console.log("admin dukche", res?.data?.user?.role)
           navigate("/admin");
         } else if ((res?.data?.user?.role as TRole) === role.employee) {
+          console.log("employee dukche", res?.data?.user?.role)
           navigate("/employee");
         }
       }

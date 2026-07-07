@@ -41,8 +41,10 @@ export default function AllUsersPage() {
 
   const { data, isLoading } = useGetAllUsersQuery(queryParams);
 
-  const users: AdminUser[] = data?.data ?? [];
-  const totalPages: number = data?.meta?.totalPages ?? 1;
+  console.log("AllUsersPage data:", data);
+
+  const users: AdminUser[] = data?.data?.result ?? [];
+  const totalPages: number = data?.data?.meta?.totalPages ?? 1;
 
   // ── Handlers ──────────────────────────────────────────────────────────────
 

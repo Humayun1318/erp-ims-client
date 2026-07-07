@@ -113,7 +113,7 @@ export function UserActionModal({ open, onClose, user }: UserActionModalProps) {
           {/* Avatar + name + email */}
           <div className="flex items-center gap-4">
             <Avatar className="h-14 w-14">
-              <AvatarImage src={user.avatarUrl ?? undefined} alt={user.name} />
+              <AvatarImage src={user?.avatarUrl ?? undefined} alt={user.name} />
               <AvatarFallback className="bg-primary/10 text-primary font-semibold text-base">
                 {getInitials(user.name)}
               </AvatarFallback>

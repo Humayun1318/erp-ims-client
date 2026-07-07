@@ -7,12 +7,20 @@ import { Navigate } from "react-router";
 export const withAuth = (Component: ComponentType, requiredRole?: TRole) => {
   return function AuthWrapper() {
 
+
     const { data, isLoading, isFetching } = useUserInfoQuery(undefined);
 
     // loading state
     if (isLoading || isFetching) {
       return <Loading />;
     }
+    console.log({
+  requiredRole,
+  role: data?.data?.role,
+  email: data?.data?.email,
+  loading: isLoading,
+  fetching: isFetching,
+});
 
     // not logged in
     if (!data?.data?.email) {

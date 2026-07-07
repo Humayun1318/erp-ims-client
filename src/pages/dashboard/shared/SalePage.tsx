@@ -44,7 +44,7 @@ export default function SalesPage() {
   const [page, setPage] = useState(1);
   const [sort, setSort] = useState("-createdAt");
   const [customerFilter, setCustomerFilter] = useState<{ id: string; label: string } | null>(null);
-  const [dateRange, setDateRange] = useState<{ from?: Date; to?: Date }>({});
+  const [dateRange, setDateRange] = useState<{ from?: Date; to?: Date}>({});
   const limit = 10;
 
   const { data, isLoading, isFetching } = useGetSalesQuery({
@@ -70,7 +70,7 @@ export default function SalesPage() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col gap-6 bg-[#F2F3F3] p-6">
+    <div className="flex min-h-screen flex-col gap-6 bg-[#F2F3F3] dark:bg-[#0F1720] p-6">
       <div className="flex flex-col gap-1">
         <h1 className="text-[24px] font-bold text-[#16191F]">Sales</h1>
         <p className="text-[13px] text-[#545B64]">
@@ -104,6 +104,7 @@ export default function SalesPage() {
           <PopoverContent className="w-auto p-0" align="start">
             <Calendar
               mode="range"
+              // @ts-expect-error -- react-day-picker typing issue
               selected={dateRange}
               onSelect={(range) => {
                 setDateRange(range ?? {});
@@ -150,7 +151,7 @@ export default function SalesPage() {
         )}
       </div>
 
-      <div className="overflow-hidden rounded-[4px] border border-[#D5DBDB] bg-white shadow-[0_1px_4px_rgba(0,0,0,0.1)]">
+      <div className="overflow-hidden rounded-[4px] border border-[#D5DBDB] bg-white shadow-[0_1px_4px_rgba(0,0,0,0.1)] ">
         <Table>
           <TableHeader>
             <TableRow className="border-b border-[#EAEDED]">

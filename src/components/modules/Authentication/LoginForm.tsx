@@ -11,7 +11,6 @@ import {
 import { Input } from "@/components/ui/input";
 import config from "@/config";
 import { role } from "@/constants/role";
-import { useUser } from "@/hooks/useUser";
 import { cn } from "@/lib/utils";
 import { useLoginMutation } from "@/redux/features/auth/auth.api";
 import { TRole } from "@/types";

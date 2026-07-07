@@ -20,7 +20,7 @@ export default function StatCard({
 }: StatCardProps) {
   return (
     <div
-      className="flex flex-col gap-2 rounded-[4px] border border-[#D5DBDB] bg-white p-4 shadow-[0_1px_4px_rgba(0,0,0,0.1)]"
+      className="flex flex-col gap-2 rounded-[4px] border border-[#D5DBDB] dark:bg-[#0F1720] bg-white p-4 shadow-[0_1px_4px_rgba(0,0,0,0.1)]"
       style={{ borderLeft: `4px solid ${accentColor}` }}
     >
       <div className="flex items-center justify-between">

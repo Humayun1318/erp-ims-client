@@ -91,7 +91,7 @@ export default function CustomersPage() {
   const meta = data?.meta;
 
   return (
-    <div className="flex min-h-screen flex-col gap-6 bg-[#F2F3F3] p-6">
+    <div className="flex min-h-screen flex-col gap-6 bg-[#F2F3F3] dark:bg-[#0F1720] p-6">
       <div className="flex flex-col gap-1">
         <h1 className="text-[24px] font-bold text-[#16191F]">Customers</h1>
         <p className="text-[13px] text-[#545B64]">

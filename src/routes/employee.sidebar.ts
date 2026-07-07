@@ -1,12 +1,11 @@
 import { ISidebarItem } from "@/types";
-// import { lazy } from "react";
-import { Package, Users2, Receipt } from "lucide-react";
-import ProductsPage from "@/pages/dashboard/shared/ProductsPage";
-import SalesPage from "@/pages/dashboard/shared/SalePage";
+import { lazy } from "react";
+import { Package,Users2, Receipt } from "lucide-react";
 
-// const ProductsPage = lazy(() => import("@/pages/dashboard/shared/ProductsPage"));
-// const CustomersPage = lazy(() => import("@/pages/dashboard/shared/CustomersPage"));
-// const SalesPage = lazy(() => import("@/pages/dashboard/shared/SalesPage"));
+
+const ProductsPage = lazy(() => import("@/pages/dashboard/shared/ProductsPage"));
+const CustomersPage = lazy(() => import("@/pages/dashboard/shared/CustomersPage"));
+const SalesPage = lazy(() => import("@/pages/dashboard/shared/SalePage"));
 
 // Employee permissions (backend): View Products (read-only), View Customers
 // (read-only — needed only to attach one to a sale), Create Sales.
@@ -22,7 +21,7 @@ export const employeeSidebarItems: ISidebarItem[] = [
   {
     title: "Point of Sale",
     items: [
-    //   { title: "Customers", url: "/employee/customers", component: CustomersPage, icon: Users2 },
+      { title: "Customers", url: "/employee/customers", component: CustomersPage, icon: Users2 },
       { title: "Sales", url: "/employee/sales", component: SalesPage, icon: Receipt },
     ],
   },

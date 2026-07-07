@@ -1,10 +1,10 @@
 import { AlertTriangle } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { IDashboardLowStockProduct } from "@/types/analytics.types";
+import { IAnalyticsLowStockProduct } from "@/types/analytics.types";
 
 
 interface LowStockPanelProps {
-  products: IDashboardLowStockProduct[];
+  products: IAnalyticsLowStockProduct[];
   isLoading?: boolean;
 }
 
@@ -15,7 +15,7 @@ function stockSeverity(qty: number) {
 
 export default function LowStockPanel({ products, isLoading }: LowStockPanelProps) {
   return (
-    <div className="overflow-hidden rounded-[4px] border border-[#D5DBDB] bg-white shadow-[0_1px_4px_rgba(0,0,0,0.1)]">
+    <div className="overflow-hidden rounded-[4px] border border-[#D5DBDB] bg-white shadow-[0_1px_4px_rgba(0,0,0,0.1)] dark:bg-[#0F1720]">
       <div className="flex items-center justify-between border-b border-[#EAEDED] px-4 py-3">
         <span className="flex items-center gap-2 text-[13px] font-bold text-[#16191F]">
           <AlertTriangle className="h-4 w-4 text-[#F39C12]" />

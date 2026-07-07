@@ -164,6 +164,7 @@ export default function ProductFilterPanel({ activeFilters, onApply, onReset }: 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="flex flex-col gap-4">
             <FormField
+            // @ts-expect-error -- react-day-picker typing issue
               control={form.control}
               name="category"
               render={({ field }) => (

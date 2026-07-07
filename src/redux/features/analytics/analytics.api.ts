@@ -1,12 +1,12 @@
 import { baseApi } from "@/redux/baseApi";
-import { IDashboardSummary } from "@/types/analytics.types";
+import { IAnalyticsSummary } from "@/types/analytics.types";
 
 
 export const analyticsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getDashboardSummary: builder.query<IDashboardSummary, void>({
+    getDashboardSummary: builder.query<IAnalyticsSummary, void>({
       query: () => ({ url: "/dashboard/summary", method: "GET" }),
-      transformResponse: (response: { data: IDashboardSummary }) => response.data,
+      transformResponse: (response: { data: IAnalyticsSummary }) => response.data,
       providesTags: [{ type: "DASHBOARD", id: "SUMMARY" }],
     }),
   }),

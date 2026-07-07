@@ -259,7 +259,7 @@ export function RegisterForm({
 
         <Button
           onClick={() =>
-            (window.location.href = `${config.baseUrl}/auth/google?redirect=//employee`)
+            (window.location.href = `${config.baseUrl}/auth/google?redirect=/employee`)
           }
           type="button"
           variant="outline"

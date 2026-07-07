@@ -1,12 +1,13 @@
 
 import { ISidebarItem } from "@/types";
 import { lazy } from "react";
-import { BarChart3, Package, Users2, Receipt, Users, Flame } from "lucide-react";
+import { BarChart3, Package, Users2, Receipt, Users } from "lucide-react";
+
 
 
 // Shared modules — same page component every role uses; each page internally
 // checks the user's role to show/hide Create/Edit/Delete actions.
-const DashboardPage = lazy(() => import("@/pages/dashboard/shared/DashboardPage"));
+const AnalyticsPage = lazy(() => import("@/pages/dashboard/shared/AnalyticsPage"));
 const ProductsPage = lazy(() => import("@/pages/dashboard/shared/ProductsPage"));
 const CustomersPage = lazy(() => import("@/pages/dashboard/shared/CustomersPage"));
 const SalesPage = lazy(() => import("@/pages/dashboard/shared/SalePage"));
@@ -21,7 +22,7 @@ export const adminSidebarItems: ISidebarItem[] = [
   {
     title: "Overview",
     items: [
-      { title: "Dashboard", url: "/admin/dashboard", component: DashboardPage, icon: BarChart3 },
+      { title: "Dashboard", url: "/admin/analytics", component: AnalyticsPage, icon: BarChart3 },
       // { title: "ERP Analytics", url: "/admin/analytics", component: AnalyticsPage, icon: BarChart3 },
     ],
   },

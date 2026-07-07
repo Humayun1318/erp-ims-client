@@ -19,11 +19,11 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import CustomerPicker from "./CustomerPicker";
-import ProductPicker from "./ProductPicker";
 import { useState } from "react";
 import { SaleFormInput, saleFormSchema, SaleFormValues } from "@/validations/sale.validation";
 import { useCreateSaleMutation } from "@/redux/features/sale/sale.api";
+import CustomerPicker from "../customer/CustomerPicker";
+import ProductPicker from "../product/ProductPicker";
 
 interface SaleFormDialogProps {
   open: boolean;

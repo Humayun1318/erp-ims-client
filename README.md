@@ -1,627 +1,218 @@
-# 🏭 Mini ERP — Inventory & Sales Management Frontend
+# Mini ERP — Inventory & Sales Management System (Client)
 
-A modern, full-featured **ERP-style management application** built with React 19 and TypeScript. It provides a polished dashboard shell for inventory, sales, and operations workflows while preserving the existing authentication, routing, and reusable UI architecture.
+A role-aware React frontend for the Mini ERP backend — one interface where Admins, Managers, and Employees each see exactly the modules their role permits, built on an AWS Console-inspired design system chosen deliberately for a data-dense, multi-role operational tool.
 
-> Built for teams that want a professional inventory and sales management experience with a clean UI, role-based access, and scalable frontend structure.
+## Project Description
 
----
+This is the client for a Mini ERP system managing products, customers, and sales. It doesn't ship three separate apps for three roles — it ships **one set of shared page components** (Products, Customers, Sales, Dashboard) that read the authenticated user's role and adjust what's rendered: an Employee sees a read-only product catalog and can create sales, a Manager gets full CRUD on products/customers plus the dashboard, and an Admin additionally gets user management and system tooling. The backend enforces every permission independently — the frontend's role gating is a UX convenience, not the security boundary.
 
-## 🌐 Live Demo
+## Core Features
 
-```
-Live URL: https://mini-erp-client.vercel.app
-Backend: https://mini-erp-api.vercel.app/api/v1
-```
+- **JWT + Google OAuth Authentication** — local email/password login and Google OAuth, backed by an axios interceptor that transparently refreshes an expired access token and retries the original request (with request queuing to avoid duplicate refresh calls).
+- **Role-Based Sidebar & Routing** — three sidebar configs (Admin/Manager/Employee) map straight to backend permissions; routes are generated from whichever config matches the logged-in user's role.
+- **Product Management** — full CRUD, multi-image upload (Cloudinary, add/remove before save), SKU + category, search, category filter, three independent numeric range filters (selling price, purchase price, stock), six-field sort, and pagination — every query param wired to the backend's actual `getProductsQuerySchema`.
+- **Customer Management** — full CRUD for Admin/Manager; read-only list for Employee (needed only to attach a customer to a sale).
+- **Sales Management** — dynamic multi-line-item sale creation via searchable Customer and Product pickers, live client-side total preview, and a read-only detail view (sales are immutable once created — no edit form). The server, not the client, computes unit price and grand total.
+- **Dashboard** — four AWS-style stat cards (Total Products, Customers, Sales, Low Stock Alerts) plus a low-stock resource table; Admin/Manager only, matching the backend's route guard.
+- **Design System** — a custom AWS Console-derived visual language (`design.md`): orange accent, dense 13px typography, monospace identifiers, resource-table and service-dashboard-card patterns, restrained motion — applied consistently across marketing pages, auth screens, and every dashboard module, in both light and dark variants.
+- **Form Validation** — every mutating form (Product, Customer, Sale) uses `react-hook-form` + `zod` via `@hookform/resolvers`, with server-matching validation rules (e.g. price/stock non-negativity, min ≤ max on every range filter).
+- **Toast Feedback** — `sonner` for success/error feedback on every mutation, surfacing the backend's actual `AppError` message where available.
+- **Reusable Picker Components** — `CustomerPicker` and `ProductPicker`: debounced search, popover-based selection, stock-awareness (out-of-stock products are shown but disabled).
 
----
+## Technology Stack
 
-## ✨ Features at a Glance
-
-### 🔐 Authentication
-- 📧 Email & password login with JWT
-- 🔑 Google OAuth login integration
-- 🛡️ Role-based access control (Admin / User)
-- ✅ Account verification status tracking
-- 🔒 Protected routes with role guards
-
-### 💰 User Dashboard
-- 📊 Overview with income / expense / balance summary from API
-- 🍩 Spending breakdown by category (charts)
-- 📋 Full transaction management (create, edit, delete)
-- 🔁 Recurring transaction management
-- 🗂️ Category management (income & expense)
-- 👤 Profile view & update (name, avatar URL)
-- 🔐 Password change / set password (Google users)
-- ⚙️ Account settings (delete account with confirmation)
-
-### 🛠️ Admin Panel
-- 📈 Analytics dashboard with user statistics
-- 👥 All users table with search, filter by role & status
-- 🎛️ Manage individual users (suspend / ban / activate)
-- ⚙️ Manual cron job trigger with live result tracking
-- 📦 Cron stats: total processed, created, failed
-
-### 🔄 Automation & System
-- ⏰ Recurring transaction system (daily / weekly / monthly / yearly)
-- 🤖 Automated cron job that processes due recurrences daily
-- 🛠️ Admin manual trigger with idempotent safety (no duplicate creation)
-
-### 🎨 UI / UX
-- 🌙 Dark / light theme toggle
-- 📱 Fully responsive (mobile-first design)
-- 🧩 Modular component architecture
-- 🔔 Real-time toast notifications (Sonner)
-- ♿ Accessible UI via Radix UI primitives
-- 🔍 Table search, filter, and pagination across all main pages
-
----
-
-## 🖼️ Screenshots
-
-> Screenshots coming soon.
-
----
-
-## 🧰 Tech Stack
-
-### Frontend
 | Category | Technology |
 |---|---|
-| Framework | React 19 + TypeScript |
-| Build Tool | Vite |
-| Styling | Tailwind CSS |
-| UI Components | Radix UI (shadcn/ui) |
-| Icons | Lucide React |
-| State Management | Redux Toolkit + RTK Query |
-| Routing | React Router v7 |
-| Forms | React Hook Form + Zod |
-| HTTP Client | Axios |
-| Notifications | Sonner |
-| Theme | next-themes |
+| **Framework** | React 19, Vite |
+| **Language** | TypeScript |
+| **Routing** | React Router 7 |
+| **State / Data Fetching** | Redux Toolkit + RTK Query, with a custom `axiosBaseQuery` adapter over Axios (not `fetchBaseQuery`) |
+| **HTTP Client** | Axios, with request/response interceptors handling JWT refresh-on-expiry |
+| **Forms & Validation** | React Hook Form, Zod, `@hookform/resolvers` |
+| **UI Components** | shadcn/ui (Radix UI primitives: Dialog, AlertDialog, DropdownMenu, Popover, Select, Accordion, Tooltip, etc.) |
+| **Styling** | Tailwind CSS v4 (`@tailwindcss/vite`), `tailwind-merge`, `class-variance-authority`, `tw-animate-css` |
+| **Icons** | lucide-react |
+| **Notifications** | Sonner |
+| **Charts** | Recharts (Admin Analytics) |
+| **Dates** | date-fns, react-day-picker |
+| **Theming** | next-themes (light/dark mode) |
 
-### Backend (separate repo)
-| Category | Technology |
-|---|---|
-| Runtime | Node.js |
-| Framework | Express.js |
-| Database | MongoDB + Mongoose |
-| Auth | JWT + Google OAuth |
-| Scheduler | Node-cron |
-| Validation | Zod |
+## Project Architecture
 
----
+The frontend mirrors the backend's philosophy of **shared logic, role-gated presentation** rather than duplicating UI per role:
 
-## 📋 Prerequisites
+- **One page component per business module** (`ProductsPage`, `CustomersPage`, `SalesPage`, `DashboardPage`) is used by every role that has access to it. Inside each page, a single `canManage` (or equivalent) boolean — derived from the authenticated user's role — decides whether mutating UI (Create/Edit/Delete buttons, forms) renders at all. Read-only roles get the exact same data view with the controls simply absent, not disabled-and-visible.
+- **Role → Sidebar mapping is the single source of truth for access.** `admin.sidebar.ts`, `manager.sidebar.ts`, and `employee.sidebar.ts` each declare only the routes that role's backend permissions actually allow; `roleSidebarMap` resolves the logged-in user's role to their sidebar, and `generateRoutes` flattens that config into the actual `<Route>` elements mounted for the session. A route that isn't in a role's sidebar config simply isn't registered for that session.
+- **RTK Query per feature module** (`product.api.ts`, `customer.api.ts`, `sale.api.ts`, `dashboard.api.ts`, `auth.api.ts`), each injected into a single `baseApi`, sharing one Axios instance and one set of `tagTypes` for cache invalidation. A Sale creation invalidates not just the Sales list, but also Products (stock changed) and Dashboard (totals changed) — reflecting the backend's own transactional coupling between those three.
+- **Validation schemas live next to their form** (`product.validation.ts`, `customer.validation.ts`, `sale.validation.ts`, `product.filter.validation.ts`) and are written to match the backend's Zod schemas field-for-field, so a rejected form submission and a rejected API call fail for the same reason.
+- **Picker components (`CustomerPicker`, `ProductPicker`) are shared, not duplicated** between the Sale creation form and any future feature needing the same lookup-and-select pattern.
 
-Before you begin, make sure you have the following installed:
+## Folder Structure
 
-- **Node.js** v18+ or **Bun** v1+
-- **npm**, **yarn**, or **bun**
-- **Backend API** running locally or deployed
-- A **Google OAuth** client ID (if using Google login)
-
----
-
-## 🚀 Installation
-
-### 1. Clone the repository
-
-```bash
-git clone https://github.com/Humayun1318/web-development-bootcamp-may-2026.git
-cd Frontend
+```
+src/
+├── pages/
+│   ├── Home.tsx                        # Marketing landing page
+│   └── auth/
+│       ├── Login.tsx
+│       ├── Register.tsx
+│       ├── AuthLayout.tsx              # Shared split-panel layout for auth screens
+│       ├── AnimatedLoginIllustration.tsx
+│       └── AnimatedRegisterIllustration.tsx
+├── pages/dashboard/
+│   ├── shared/                         # Used by every role that has access
+│   │   ├── product/
+│   │   │   ├── ProductsPage.tsx
+│   │   │   ├── ProductFormDialog.tsx
+│   │   │   ├── ProductFilterPanel.tsx
+│   │   │   ├── ProductPicker.tsx
+│   │   │   ├── product.api.ts
+│   │   │   ├── product.validation.ts
+│   │   │   └── product.filter.validation.ts
+│   │   ├── customer/
+│   │   │   ├── CustomersPage.tsx
+│   │   │   ├── CustomerFormDialog.tsx
+│   │   │   ├── CustomerPicker.tsx
+│   │   │   ├── customer.api.ts
+│   │   │   └── customer.validation.ts
+│   │   ├── sale/
+│   │   │   ├── SalesPage.tsx
+│   │   │   ├── SaleFormDialog.tsx
+│   │   │   ├── SaleDetailDialog.tsx
+│   │   │   ├── sale.api.ts
+│   │   │   ├── sale.types.ts
+│   │   │   └── sale.validation.ts
+│   │   └── dashboard/
+│   │       ├── DashboardPage.tsx
+│   │       ├── StatCard.tsx
+│   │       ├── LowStockPanel.tsx
+│   │       ├── dashboard.api.ts
+│   │       └── dashboard.types.ts
+│   └── Admin/                          # Admin-only, no shared equivalent
+│       ├── AnalyticsPage.tsx
+│       ├── AllUsersPage.tsx
+│       └── CornJobPage.tsx
+├── routes/
+│   ├── admin.sidebar.ts
+│   ├── manager.sidebar.ts
+│   ├── employee.sidebar.ts
+│   ├── routes.constants.ts             # roleSidebarMap
+│   └── generateRoutes.ts
+├── redux/
+│   ├── baseApi.ts                      # createApi + axiosBaseQuery + tagTypes
+│   ├── axiosBaseQuery.ts
+│   └── features/
+│       └── auth/auth.api.ts
+├── lib/
+│   └── axios.ts                        # axiosInstance + interceptors (JWT refresh)
+├── components/
+│   ├── ui/                             # shadcn/ui primitives
+│   └── Sidebar.tsx
+├── layouts/
+│   └── DashboardLayout.tsx             # Role-aware sidebar + <Routes> mount point
+├── hooks/
+│   └── useAuth.ts (or equivalent role accessor via useUserInfoQuery)
+├── config/
+│   └── index.ts                        # baseUrl etc.
+└── types/
+    └── index.ts                        # ISidebarItem and other shared types
 ```
 
-### 2. Install dependencies
+## Design System
+
+All visual decisions trace back to a single source of truth: `design.md`, an AWS Management Console-inspired specification chosen because this app has the same underlying shape as AWS's own console — one interface, multiple roles, dense operational data (resource tables, stock counts, sale totals) that benefits from information density over decoration.
+
+**Key tokens carried through every page:**
+- **Accent**: `#FF9900` (primary) / `#EC7211` (hover) — used only for primary actions and active states, never as large background fields.
+- **Chrome vs. content**: navy (`#232F3E`) is reserved for navigation/utility strips; all working content areas are light (`#F2F3F3` canvas, white surfaces) in light mode.
+- **Status semantics carry real meaning, not decoration**: green (`#1D8348`) = in stock / operational / running; amber (`#F39C12`) = low stock / pending; red (`#E74C3C`) = out of stock / stopped; blue (`#3498DB`) = provisioning (used specifically on the Register screen, matching AWS's own "resource being created" status).
+- **Typography**: 13px dense body text, monospace for identifiers (SKUs, sale line items) — mirroring AWS's own convention of a monospace override for machine-generated values.
+- **Signature elements over generic illustrations**: the Home hero and both auth screens replace stock/generic artwork with elements grounded in the actual product — a live resource-table preview on Home, an isometric inventory crate on Login, a "provisioning" badge on Register — rather than reused assets from unrelated projects.
+- **Dark mode**: `design.md` defines light-mode tokens only (AWS Console has no public dark theme), so dark-mode pairs were derived by extending the same token *roles* (canvas/surface/border/ink/accent) with dark-appropriate values, keeping `#FF9900` constant since it reads well on both backgrounds. Applied via Tailwind's `dark:` variant, toggled through `next-themes`.
+- **Accessibility**: status is always conveyed by color **and** text label (never color alone), focus rings differ by surface (orange on dark chrome, blue `#0073BB` on white content), and `prefers-reduced-motion` disables all decorative SVG animation across both auth illustrations.
+
+## Role-Based Access
+
+| Role | Sidebar Access |
+|---|---|
+| **Admin** | Dashboard, Products (full CRUD), Customers (full CRUD), Sales (create + view), ERP Analytics, User Management, Automation |
+| **Manager** | Dashboard, Products (full CRUD), Customers (full CRUD), Sales (create + view) |
+| **Employee** | Products (read-only), Customers (read-only — for sale creation), Sales (create + view) |
+
+Enforced at three layers: (1) the sidebar config only lists routes the role can reach, (2) each shared page component hides mutating UI when the role lacks permission, (3) the backend independently re-checks the role on every request — the frontend never being the actual security boundary.
+
+## Authentication
+
+- **Local login**: email + password, backed by the Passport local strategy on the backend.
+- **Google OAuth**: redirect-based flow via `passport-google-oauth20`; on return, the same JWT issuance path as local login.
+- **Session handling**: `useUserInfoQuery()` (from `authApi`, an RTK Query hook) is the single source of truth for the logged-in user's identity and role across the entire app — sidebar selection, page-level `canManage` checks, and route guards all read from it rather than decoding the JWT independently on the client.
+- **Token refresh**: the shared Axios instance detects an expired-JWT response, queues any concurrent requests that arrive during the refresh, calls the refresh endpoint once, then replays the original request(s) — avoiding a refresh storm when multiple queries fire at once.
+
+## Feature Modules
+
+### Products
+Search (`searchTerm`), a category filter, three independent numeric range filters (selling price, purchase price, stock quantity — each validated client-side with the same min ≤ max rule the backend enforces), a six-field sort menu, and pagination — every one of these query parameters maps directly to the backend's `getProductsQuerySchema`. Multi-image upload supports adding and removing images before save, sent as `FormData` (a stringified `data` field alongside file entries) to match the backend's `multer-storage-cloudinary` + `validateRequest` pattern exactly.
+
+### Customers
+Full CRUD for Admin/Manager; Employees get the same list and search, read-only, so they can look up a customer while building a sale without being able to alter the customer record.
+
+### Sales
+A sale is built from a searchable customer selector and one-or-more searchable product line items (each with a live stock check that disables out-of-stock products in the picker). The client shows an estimated total for feedback, but every real number — unit price, grand total — is confirmed by the backend at submission, never trusted from the form. Sales have no edit UI: they're immutable history once created, matching the backend's design.
+
+### Dashboard
+Four stat cards (Products, Customers, Sales, Low Stock Alerts) using the AWS "service dashboard card" pattern (colored left border, large metric value), plus a low-stock resource table using the same visual pattern as the product catalog table. Admin/Manager only, with a client-side redirect guard backing up the backend's own role check.
+
+## Available Scripts
+
+| Script | Command | Description |
+|---|---|---|
+| `dev` | `vite` | Runs the Vite dev server |
+| `build` | `tsc -b && vite build` | Type-checks then builds for production |
+| `lint` | `eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0` | Lints the codebase, zero warnings tolerated |
+| `preview` | `vite preview` | Serves the production build locally for a final check |
+
+## Installation Guide
 
 ```bash
-# Using npm
+# 1. Clone the repository
+git clone https://github.com/Humayun1318/erp-ims-client.git
+cd <client-repo-name>
+
+# 2. Install dependencies
 npm install
 
-# Using bun
-bun install
-```
-
-### 3. Set up environment variables
-
-```bash
+# 3. Configure environment variables
 cp .env.example .env
-```
+# fill in the values below
 
-Then open `.env` and fill in your values (see Environment Setup below).
-
-### 4. Start the development server
-
-```bash
+# 4. Run the dev server
 npm run dev
-or bun run dev
+
+# 5. Build for production
+npm run build
+
+# 6. Preview the production build
+npm run preview
 ```
 
-The app will be running at `http://localhost:5173`
-
----
-
-## 🔧 Environment Setup
-
-Create a `.env` file in the root of the project:
+## Environment Variables
 
 ```env
-VITE_BASE_URL=http://localhost:5000/api/v1
+VITE_API_BASE_URL=http://localhost:5000/api/v1
 ```
 
-### `.env.example`
-
-```env
-# Backend API base URL
-# Local development
-VITE_BASE_URL=http://localhost:5000/api/v1
-
-# Production
-# VITE_BASE_URL=https://your-backend-domain.com/api/v1
-```
-
-> ⚠️ The backend must be running and accessible at the `VITE_BASE_URL` for the app to work correctly.
-
----
-
-## 📜 Available Scripts
-
-```bash
-# Start development server (hot reload)
-bun run dev
-
-# Build for production
-bun run build
-
-# Preview production build locally
-bun run preview
-
-# Run ESLint checks
-bun run lint
-
-```
-
----
-
-## 📁 Project Structure
-
-```
-Frontend/
-├── public/                           # Static public assets
-└── src/
-    ├── assets/                       # Icons, images, SVGs
-    │
-    ├── components/                   # Reusable shared components
-    │   ├── layout/                   # Layout wrappers
-    │   │   ├── AuthLayout.tsx        # Layout for auth pages
-    │   │   ├── CommonLayout.tsx      # Shared base layout
-    │   │   ├── DashboardLayout.tsx   # Dashboard shell (sidebar + content)
-    │   │   └── ModeToggler.tsx       # Dark / light theme toggle button
-    │   ├── modules/                  # Feature UI modules
-    │   │   ├── Authentication/       # Login, Register forms
-    │   │   └── dashboard/
-    │   │       ├── admin/            # Admin-specific modules
-    │   │       │   ├── analytics/    # StatCard, AnalyticsPage module
-    │   │       │   ├── users/        # UsersTable, UsersFilters, UserActionModal
-    │   │       │   └── cron/         # CronJobPage module
-    │   │       └── user/             # User-specific modules
-    │   │           ├── category/     # CategoryTable, AddEditCategoryModal, DeleteModal
-    │   │           ├── insight/      # Financial insight components
-    │   │           ├── overview/     # Dashboard overview / charts
-    │   │           ├── privacy/      # ChangePasswordForm, SetPasswordForm
-    │   │           ├── profile/      # ProfileInfoCard, UpdateProfileForm
-    │   │           ├── recurring/    # RecurringTable, Modals, Filters
-    │   │           └── transaction/  # TransactionTable, Modals, Filters, RecurringFormFields
-    │   │   └── DashboardNavbar.tsx   # Top navbar for dashboard
-    │   ├── HomePage/                 # Landing / home page components
-    │   └── ui/                       # Base UI primitives (shadcn/ui)
-    │       ├── app-sidebar.tsx       # Application sidebar component
-    │       ├── Loading.tsx           # Global loading spinner
-    │       └── ReusablePagination.tsx # Shared pagination used across all tables
-    │
-    ├── config/                       # App-level config (base URL, env vars)
-    ├── constants/                    # Role enums, fixed app constants
-    ├── context/                      # React Context providers (User, Theme)
-    ├── hooks/                        # Custom hooks (useUser, useTheme)
-    │
-    ├── lib/                          # Core service layer
-    │   ├── axios.ts                  # Axios instance with interceptors
-    │   └── utils.ts                  # Shared utility functions
-    │
-    ├── pages/                        # Route-level page components
-    │   ├── dashboard/
-    │   │   ├── Admin/
-    │   │   │   ├── AllUsersPage.tsx
-    │   │   │   ├── AnalyticsPage.tsx
-    │   │   │   └── CronJobPage.tsx
-    │   │   └── User/
-    │   │       ├── CategoryPage.tsx
-    │   │       ├── InsightPage.tsx
-    │   │       ├── Overview.tsx
-    │   │       ├── PrivacyPage.tsx
-    │   │       ├── ProfilePage.tsx
-    │   │       ├── RecurringPage.tsx
-    │   │       ├── SettingsPage.tsx
-    │   │       └── TransactionPage.tsx
-    │   ├── Homepage.tsx
-    │   ├── Login.tsx
-    │   ├── NotFoundPage.tsx
-    │   ├── Register.tsx
-    │   └── UnauthorizedPage.tsx
-    │
-    ├── providers/                    # App-level providers (Redux, Theme, etc.)
-    │
-    ├── redux/                        # State management
-    │   ├── features/
-    │   │   ├── admin/                # admin.api.ts
-    │   │   ├── auth/                 # auth.api.ts
-    │   │   ├── category/             # category.api.ts
-    │   │   ├── recurring/            # recurring.api.ts
-    │   │   ├── transactions/         # transaction.api.ts
-    │   │   └── user/                 # user.api.ts
-    │   ├── axiosBaseQuery.ts         # RTK Query base query with Axios
-    │   ├── baseApi.ts                # Root API slice definition
-    │   ├── hook.ts                   # Typed Redux hooks (useAppDispatch, useAppSelector)
-    │   └── store.ts                  # Redux store configuration
-    │
-    ├── routes/                       # Route configuration & guards
-    ├── types/                        # Global TypeScript type definitions
-    ├── utils/                        # Helper / formatting functions
-    │
-    ├── App.tsx                       # Root app component with router
-    ├── index.css                     # Global styles + Tailwind directives
-    ├── main.tsx                      # App entry point
-    └── vite-env.d.ts                 # Vite environment type declarations
-```
-
----
-
-## 🗺️ Routing Structure
-
-```
-/                          → Landing / redirect
-/login                     → Login page (email + Google)
-/register                  → Registration page
-
-/user/                     → User dashboard layout (protected)
-  dashboard                → Overview: charts, summary, spending
-  transactions             → Transaction list (CRUD + filters)
-  recurrences              → Recurring schedules (CRUD + filters)
-  categories               → Category management (CRUD)
-  profile                  → Profile view + update
-  privacy                  → Change / set password
-  settings                 → Account settings (delete)
-
-/admin/                    → Admin layout (protected, admin only)
-  analytics                → System analytics dashboard
-  all-users                → User management table
-  cron-job                 → Manual cron job trigger
-
-/404                       → Not found page
-/unauthorized              → Unauthorized access page
-```
-
----
-
-## 🧩 Feature Breakdown
-
-### 🔐 A. Authentication
-
-The auth system supports two login methods:
-
-- **Email & Password** — standard JWT-based authentication
-- **Google OAuth** — users can sign in with their Google account
-
-After login, the backend returns a JWT which is stored and sent with every subsequent API request via Axios interceptors.
-
-Role-based route protection works as follows:
-- `/user/*` routes → accessible to users with role `"user"`
-- `/admin/*` routes → accessible only to users with role `"admin"`
-- Unauthorized access → redirected to `/unauthorized`
-
-Google-only users (no local password) see a **"Set Password"** section in the Privacy page instead of "Change Password," allowing them to add email/password login to their account.
-
----
-
-### 💰 B. User Dashboard
-
-#### Overview Page
-- Income, expense, and current balance fetched from the API
-- Visual charts for spending category breakdown
-- Quick summary cards
-
-#### Transaction Management
-- Full CRUD with a clean table UI
-- Columns: Category, Type, Amount, Date, Payment Method, Tags, Recurring badge, Actions
-- **Filters:** search, type (income/expense), category, payment method, date range
-- **Sorting:** by date or amount (asc/desc)
-- **Pagination:** reusable component used across all tables
-- Create a transaction and optionally make it recurring simultaneously
-- When "Make Recurring" is checked, a second API call creates the recurrence schedule automatically
-
-#### Category Management
-- Manage product and inventory categories
-- System categories (created by admin/seed) are differentiated from user-created ones
-- Color picker for custom category colors
-- Badges for type (income = green, expense = red) and source (System / Custom)
-
-#### Recurring Transaction Management
-- Separate management page for recurring schedules
-- Each recurrence document drives automatic transaction creation via cron job
-- Fields: frequency (daily/weekly/monthly/yearly), interval, nextDueDate, endDate
-- Active/inactive status management
-
-#### Profile Management
-- View all user info: name, email, role, status, verified state, timezone, currency, login method
-- Update name and avatar URL
-- Currency shown as **read-only** — changing it would affect display of all past transactions
-
-#### Privacy & Security
-- **Local users:** Change password form (current + new + confirm)
-- **Google-only users:** Set password form (new + confirm + info notice)
-- Auth provider auto-detected from `user.auths` array
-
-#### Account Settings
-- Delete account with email confirmation guard
-- User must type their email address to enable the delete button
-
----
-
-### 🛠️ C. Admin Panel
-
-#### Analytics Dashboard
-Summary stat cards showing:
-- Total users
-- Active users
-- Suspended users
-- Banned users
-- Total admins
-- System status (healthy / warning / error)
-
-#### All Users Management
-- Full table of all registered users
-- **Filters:** search by name or email, filter by role, filter by status
-- **Columns:** Avatar, Name, Email, Role, Status (with colored badges), Joined date, Manage button
-- **Manage Modal:** View full user details + update status (active / suspended / banned)
-- Pagination with the shared `ReusablePagination` component
-
-#### Cron Job Control
-- Manual trigger button for the recurring transaction processor
-- Displays live result after each run:
-  - ✅ Processed count
-  - ✅ Created count
-  - ❌ Failed count
-- Safe to run multiple times — already-processed recurrences are skipped
-- Use case: recover from a missed or failed scheduled job
-
----
-
-### 🔄 D. Recurring Transaction System
-
-The system has its own `Recurring` collection in the database. Each document represents a scheduled pattern:
-
-```
-Recurring {
-  categoryId, type, amount, paymentMethod,
-  frequency, interval, nextDueDate, endDate,
-  isActive
-}
-```
-
-The **cron job** runs daily and:
-1. Finds all active recurrences where `nextDueDate <= today`
-2. Creates a `Transaction` for each
-3. Advances `nextDueDate` by `interval × frequency`
-
-Admins can manually trigger this process from the Cron Job page if the scheduler was missed.
-
----
-
-## 🔌 API Integration
-
-All API calls are made using **RTK Query** with Axios as the base client.
-
-```ts
-// src/config/index.ts
-const config = {
-  baseUrl: import.meta.env.VITE_BASE_URL,
-};
-```
-
-### Authentication Flow
-1. User logs in → backend returns JWT token
-2. Token stored (cookie / localStorage)
-3. Axios interceptor attaches token to every request header
-4. On 401 response → user redirected to login
-
-### RTK Query Features Used
-- Automatic caching and cache invalidation
-- `providesTags` / `invalidatesTags` for keeping data fresh after mutations
-- Loading and error states out of the box
-- No manual `useEffect` data fetching
-
----
-
-## 🗃️ State Management
-
-| Layer | Tool | Purpose |
-|---|---|---|
-| Server state | RTK Query | API data fetching, caching, mutations |
-| Global store | Redux Toolkit | Store configuration |
-| Auth/User data | React Context + `useUser` hook | Access user info anywhere |
-| Theme | React Context + `useTheme` hook | Dark/light mode toggle |
-| Form state | React Hook Form | Controlled form fields |
-| UI state | Local `useState` | Modals, pagination, filters |
-
----
-
-## ✅ Form Validation
-
-All forms use **React Hook Form** + **Zod** following a consistent pattern:
-
-```ts
-const schema = z.object({
-  name: z.string().min(3, "Name too short"),
-  type: z.enum(["income", "expense"]),
-  amount: z.number().positive("Must be > 0"),
-});
-
-const form = useForm({ resolver: zodResolver(schema) });
-```
-
-- Validation runs on submit and on blur
-- Errors shown inline under each field via `<FormMessage />`
-- All schemas live in dedicated `*.schema.ts` files where applicable
-
----
-
-## 🎨 Styling Approach
-
-- **Tailwind CSS** utility-first for all styles
-- **shadcn/ui** component library (built on Radix UI primitives)
-- **Dark mode** via `next-themes` — toggled globally
-- Consistent design tokens: spacing, border radius, color palette
-- All form inputs share the same `h-9 w-full` sizing for visual consistency
-- Mobile-first responsive breakpoints throughout
-
----
-
-## ⚡ Performance Optimizations
-
-- **Code splitting** with `React.lazy` + `Suspense` for route-level components
-- **RTK Query caching** — avoids redundant API calls for same data
-- **Pagination** on all data-heavy tables — no large list rendering
-- Selective re-renders with proper Redux selector usage
-- Vite's fast HMR during development
-- Production build outputs to `dist/` with tree-shaking and minification
-
----
-
-## 🚢 Deployment
-
-Build the project for production:
-
-```bash
-bun run build
-```
-
-The output will be in the `dist/` folder. Deploy it to any static hosting platform:
-
-| Platform | Notes |
-|---|---|
-| **Vercel** | Recommended — automatic CI/CD from GitHub |
-| **Netlify** | Drag and drop `dist/` or connect repo |
-| **Render** | Use static site deployment |
-
-> ⚠️ **Important:** Set `VITE_BASE_URL` as an environment variable in your deployment platform. The backend API must be running and accessible from the deployed frontend domain.
-
----
-
-## 🐛 Troubleshooting
-
-| Issue | Solution |
-|---|---|
-| `VITE_BASE_URL is undefined` | Make sure `.env` file exists and variable starts with `VITE_` |
-| CORS errors in browser | Configure CORS on backend to allow your frontend domain |
-| Google login not working | Verify Google OAuth client ID and redirect URIs are set correctly |
-| Port 5173 already in use | Run `npx kill-port 5173` or change port in `vite.config.ts` |
-| Node version mismatch | Use `nvm use 18` or check `.nvmrc` if present |
-| RTK Query not refreshing | Check `invalidatesTags` in mutation matches `providesTags` in query |
-| Blank page after build | Check `base` option in `vite.config.ts` if deployed to a subdirectory |
-
----
-
-## 🏗️ Best Practices Implemented
-
-- ✅ **TypeScript strict mode** — full type safety across the codebase
-- ✅ **Feature-based modular architecture** — each feature owns its files
-- ✅ **Zod + React Hook Form** — type-safe, validated forms everywhere
-- ✅ **RTK Query** — smart server state caching and invalidation
-- ✅ **Reusable components** — `ReusablePagination`, `StatCard`, shared modals
-- ✅ **Role-based route protection** — admin and user routes fully guarded
-- ✅ **Accessible UI** — Radix UI primitives with proper ARIA attributes
-- ✅ **Consistent form sizing** — `h-9 w-full` across all inputs and selects
-- ✅ **Error handling** — toast notifications for all API success/failure states
-- ✅ **Responsive design** — mobile-first layout throughout
-
----
-
-## 🧪 Testing
-
-| Type | Current Status |
-|---|---|
-| TypeScript | ✅ Strict mode enabled |
-| Linting | ✅ ESLint configured |
-| Unit Tests | 🔲 Recommended: Jest + React Testing Library |
-| Integration Tests | 🔲 Recommended: MSW for API mocking |
-| E2E Tests | 🔲 Recommended: Playwright or Cypress |
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome!
-
-```bash
-# 1. Fork the repository
-# 2. Create a feature branch
-git checkout -b feature/your-feature-name
-
-# 3. Make your changes and commit
-git commit -m "feat: add your feature description"
-
-# 4. Push to your fork
-git push origin feature/your-feature-name
-
-# 5. Open a Pull Request on GitHub
-```
-
-Please follow the existing code style — ESLint will catch most issues.
-
----
-
-## 🔗 Useful Links
-
-| Resource | Link |
-|---|---|
-| React Docs | https://react.dev |
-| Tailwind CSS | https://tailwindcss.com/docs |
-| Redux Toolkit | https://redux-toolkit.js.org |
-| RTK Query | https://redux-toolkit.js.org/rtk-query/overview |
-| React Router v7 | https://reactrouter.com |
-| React Hook Form | https://react-hook-form.com |
-| Zod | https://zod.dev |
-| shadcn/ui | https://ui.shadcn.com |
-| Radix UI | https://www.radix-ui.com |
-| Lucide Icons | https://lucide.dev |
-| Sonner | https://sonner.emilkowal.ski |
-
----
-
-## 📄 License
-
-This project is licensed under the **MIT License** — feel free to use it for personal or commercial projects.
-
----
-
-## 🙋 Support
-
-- **Found a bug?** Open an issue on GitHub
-- **Feature request?** Open a discussion or issue with the `enhancement` label
-- **Questions?** Reach out via GitHub issues
-
----
-
-## 🙏 Acknowledgments
-
-- [shadcn/ui](https://ui.shadcn.com) for the beautiful, accessible component system
-- [Radix UI](https://www.radix-ui.com) for the unstyled primitive components
-- [Vercel](https://vercel.com) for seamless deployment
-- All open-source contributors whose libraries made this project possible
-
----
+## Future Improvements
+
+- **Distinct-category endpoint** — the Product category filter is currently free text matched exactly by the backend (`QueryBuilder.filter()`); a `GET /products/categories` endpoint would let it become a proper dropdown instead of relying on exact-case text entry.
+- **Optimistic updates** — RTK Query's `onQueryStarted` for instant UI feedback on Create/Update/Delete before the server responds.
+- **Table virtualization** — for very large product/sale datasets beyond what pagination comfortably handles in a single render.
+- **E2E testing** — Playwright/Cypress coverage of the full Sale-creation flow (customer + product selection through to confirmation).
+- **Skeleton-consistent loading states** — extend the current per-row skeletons to the stat cards and filter panel for a fully consistent loading experience.
+- **Accessible combobox upgrade** — replace the current custom `Popover`-based pickers with a `cmdk`-backed combobox if keyboard navigation needs go beyond what's currently implemented.
 
 ## Author
 
 **Humayun Kabir**
-
----
+Full-Stack Developer
+GitHub: [github.com/Humayun1318](https://github.com/Humayun1318)
+Email: humayunkabir6267@gmail.com

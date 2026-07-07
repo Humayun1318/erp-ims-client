@@ -1,6 +1,6 @@
 import { AlertTriangle } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { IDashboardLowStockProduct } from "@/types/dashboard.types";
+import { IDashboardLowStockProduct } from "@/types/analytics.types";
 
 
 interface LowStockPanelProps {

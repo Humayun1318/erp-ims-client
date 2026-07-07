@@ -1,8 +1,8 @@
 import { baseApi } from "@/redux/baseApi";
-import { IDashboardSummary } from "@/types/dashboard.types";
+import { IDashboardSummary } from "@/types/analytics.types";
 
 
-export const dashboardApi = baseApi.injectEndpoints({
+export const analyticsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getDashboardSummary: builder.query<IDashboardSummary, void>({
       query: () => ({ url: "/dashboard/summary", method: "GET" }),
@@ -12,4 +12,4 @@ export const dashboardApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useGetDashboardSummaryQuery } = dashboardApi;
+export const { useGetDashboardSummaryQuery } = analyticsApi;

@@ -2,7 +2,7 @@ import { ISidebarItem } from "@/types";
 import { lazy } from "react";
 import { BarChart3, Package, Users2, Receipt } from "lucide-react";
 
-const DashboardPage = lazy(() => import("@/pages/dashboard/shared/DashboardPage"));
+const AnalyticsPage = lazy(() => import("@/pages/dashboard/shared/AnalyticsPage"));
 const ProductsPage = lazy(() => import("@/pages/dashboard/shared/ProductsPage"));
 const CustomersPage = lazy(() => import("@/pages/dashboard/shared/CustomersPage"));
 const SalesPage = lazy(() => import("@/pages/dashboard/shared/SalePage"));
@@ -13,7 +13,7 @@ export const managerSidebarItems: ISidebarItem[] = [
   {
     title: "Overview",
     items: [
-      { title: "Dashboard", url: "/manager/dashboard", component: DashboardPage, icon: BarChart3 },
+      { title: "Dashboard", url: "/manager/analytics", component: AnalyticsPage, icon: BarChart3 },
     ],
   },
   {

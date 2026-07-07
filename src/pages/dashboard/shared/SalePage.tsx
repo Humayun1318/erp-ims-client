@@ -22,9 +22,10 @@ import {
 } from "@/components/ui/table";
 import { useUserInfoQuery } from "@/redux/features/auth/auth.api";
 import { useGetSalesQuery } from "@/redux/features/sale/sale.api";
-import CustomerPicker from "@/components/modules/dashboard/shared/CustomerPicker";
-import SaleFormDialog from "@/components/modules/dashboard/shared/SaleFormDialog";
-import SaleDetailDialog from "@/components/modules/dashboard/shared/SaleDetailDialog";
+import CustomerPicker from "@/components/modules/dashboard/shared/customer/CustomerPicker";
+// import SaleFormDialog from "@/components/modules/dashboard/shared/SaleFormDialog";
+import SaleDetailDialog from "@/components/modules/dashboard/shared/sale/SaleDetailDialog";
+import SaleFormDialog from "@/components/modules/dashboard/shared/sale/SaleFormDialog";
 
 
 const SORT_OPTIONS = [

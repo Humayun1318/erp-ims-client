@@ -11,8 +11,8 @@ import UnauthorizedPage from "@/pages/UnauthorizedPage";
 import NotFoundPage from "@/pages/NotFoundPage";
 import { managerSidebarItems } from "./manager.sidebar";
 import { employeeSidebarItems } from "./employee.sidebar";
-import Login from "@/pages/Login";
-import Register from "@/pages/Register";
+import Login from "@/pages/auth/Login";
+import Register from "@/pages/auth/Register";
 
 export const router = createBrowserRouter([
   {
@@ -29,7 +29,7 @@ export const router = createBrowserRouter([
     Component: withAuth(DashboardLayout, role.admin as TRole),
     path: "/admin",
     children: [
-      { index: true, element: <Navigate to="/admin/dashboard" /> },
+      { index: true, element: <Navigate to="/admin/analytics" /> },
       ...generateRoutes(adminSidebarItems),
     ],
   },
@@ -37,7 +37,7 @@ export const router = createBrowserRouter([
     Component: withAuth(DashboardLayout, role.manager as TRole),
     path: "/manager",
     children: [
-      { index: true, element: <Navigate to="/manager/dashboard" /> },
+      { index: true, element: <Navigate to="/manager/analytics" /> },
       ...generateRoutes(managerSidebarItems),
     ],
   },

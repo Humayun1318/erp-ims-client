@@ -1,6 +1,6 @@
 // ─── User ─────────────────────────────────────────────────────────────────────
 
-export type UserRole = "admin" | "user";
+export type UserRole = "ADMIN" | "MANAGER" | "EMPLOYEE";
 export type UserStatus = "active" | "suspended" | "deleted";
 
 export interface AuthProvider {
@@ -29,26 +29,4 @@ export interface UsersFiltersState {
   searchTerm: string;
   role: UserRole | "";
   status: UserStatus | "";
-}
-
-// ─── Analytics ───────────────────────────────────────────────────────────────
-
-export interface AdminAnalytics {
-  totalUsers: number;
-  activeUsers: number;
-  suspendedUsers: number;
-  deletedUsers: number;
-  totalAdmins: number;
-  systemStatus: "healthy" | "warning" | "error";
-}
-
-// ─── Cron ─────────────────────────────────────────────────────────────────────
-
-export type CronStatus = "success" | "failed" | "pending" | "never_run";
-
-export interface CronJobInfo {
-  lastRunAt: string | null;
-  nextScheduledAt: string | null;
-  lastRunStatus: CronStatus;
-  message?: string;
 }

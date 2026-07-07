@@ -30,7 +30,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useUserInfoQuery } from "@/redux/features/auth/auth.api";
 import { useDeleteCustomerMutation, useGetCustomersQuery } from "@/redux/features/customer/customer.picker.api";
-import CustomerFormDialog from "@/components/modules/dashboard/shared/CustomerFormDialog";
+import CustomerFormDialog from "@/components/modules/dashboard/shared/customer/CustomerFormDialog";
 import { ICustomer } from "@/types/customer.types";
 
 

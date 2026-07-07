@@ -1,11 +1,11 @@
 import { Package, Users2, Receipt, AlertTriangle } from "lucide-react";
 import { Navigate } from "react-router";
 import { useUserInfoQuery } from "@/redux/features/auth/auth.api";
-import StatCard from "./StatCard";
-import LowStockPanel from "./LowStockPanel";
-import { useGetDashboardSummaryQuery } from "@/redux/features/dashboard/dashboard.api";
+import StatCard from "../../../components/modules/dashboard/shared/analytics/StatCard";
+import LowStockPanel from "../../../components/modules/dashboard/shared/analytics/LowStockPanel";
+import { useGetDashboardSummaryQuery } from "@/redux/features/analytics/analytics.api";
 
-export default function DashboardPage() {
+export default function AnalyticsPage() {
   const { data: userInfo } = useUserInfoQuery(undefined);
   const role = userInfo?.data?.role;
 

@@ -12,7 +12,6 @@ import {
 } from "recharts";
 import { TrendingUp, Calendar } from "lucide-react";
 import { useGetAllTransactionsQuery } from "@/redux/features/transactions/transactions.api";
-import { useUser } from "@/hooks/useUser";
 import { useMemo } from "react";
 
 const prepareChartDataFromTransactions = (transactions: any[]) => {
@@ -92,9 +91,7 @@ const CustomTooltip = ({ active, payload }: any) => {
 // Main component to display the balance trend chart
 const BalanceTrendChart = () => {
   const { data: transactionsData, isLoading, error } = useGetAllTransactionsQuery({});
-  const { user: userData } = useUser();
-  
-  const userCurrency = userData?.currency || "USD";
+  const userCurrency = "USD";
   const transactions = transactionsData?.data || [];
   
   const { data: chartData, year } = useMemo(() => 

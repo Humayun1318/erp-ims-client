@@ -2,8 +2,6 @@
 import React, { useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useGetAllTransactionsQuery } from "@/redux/features/transactions/transactions.api";
-import { useUser } from "@/hooks/useUser";
-
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -175,9 +173,7 @@ const calculateInsightsFromTransactions = (transactions: any[], _userCurrency: s
 
 const InsightsSection: React.FC = () => {
   const { data: transactionsData, isLoading, error } = useGetAllTransactionsQuery({ limit: 100 });
-  const { user: userData } = useUser();
-  
-  const userCurrency = userData?.currency || "USD";
+  const userCurrency = "USD";
   const transactions = transactionsData?.data || [];
   
   const insights = useMemo(() => 

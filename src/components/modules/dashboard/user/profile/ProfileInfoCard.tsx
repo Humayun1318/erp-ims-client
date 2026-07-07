@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { CalendarDays, Mail, Globe, ShieldCheck, ShieldAlert } from "lucide-react";
+import { CalendarDays, Mail, ShieldCheck, ShieldAlert } from "lucide-react";
 import { IUser } from "@/types";
 import { getInitials } from "@/utils/getInitials";
 import { formatDate } from "@/utils/formatDate";
@@ -18,7 +18,7 @@ export function ProfileInfoCard({ user }: ProfileInfoCardProps) {
       {/* Avatar + name + email */}
       <div className="flex items-center gap-5">
         <Avatar className="h-20 w-20 text-xl">
-          <AvatarImage src={user.avatarUrl ?? undefined} alt={user.name} />
+          <AvatarImage src={undefined} alt={user.name} />
           <AvatarFallback className="bg-primary/10 text-primary font-semibold text-lg">
             {getInitials(user.name)}
           </AvatarFallback>
@@ -38,13 +38,9 @@ export function ProfileInfoCard({ user }: ProfileInfoCardProps) {
             {/* Status */}
             <Badge
               variant="outline"
-              className={
-                user.status === "active"
-                  ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-600"
-                  : "border-rose-500/40 bg-rose-500/10 text-rose-600"
-              }
+              className="border-emerald-500/40 bg-emerald-500/10 text-emerald-600"
             >
-              {user.status}
+              Active
             </Badge>
 
             {/* Verified */}
@@ -80,26 +76,19 @@ export function ProfileInfoCard({ user }: ProfileInfoCardProps) {
           value={user.email}
         />
         <InfoRow
-          icon={<Globe className="h-4 w-4" />}
-          label="Timezone"
-          value={user.timezone}
-        />
-        <InfoRow
-          icon={<span className="text-xs font-bold">₳</span>}
-          label="Currency"
-          value={
-            <span className="flex items-center gap-1.5">
-              {user.currency}
-              <span className="text-xs text-muted-foreground">
-                (read-only — changing currency affects all past transactions)
-              </span>
-            </span>
-          }
+          icon={<ShieldCheck className="h-4 w-4" />}
+          label="Role"
+          value={user.role}
         />
         <InfoRow
           icon={<CalendarDays className="h-4 w-4" />}
           label="Joined"
           value={formatDate(user.createdAt)}
+        />
+        <InfoRow
+          icon={<CalendarDays className="h-4 w-4" />}
+          label="Updated"
+          value={formatDate(user.updatedAt)}
         />
         <InfoRow
           icon={<ShieldCheck className="h-4 w-4" />}

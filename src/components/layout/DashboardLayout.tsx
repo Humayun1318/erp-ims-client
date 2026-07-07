@@ -1,17 +1,12 @@
 import { AppSidebar } from "@/components/app-sidebar";
-import {
-  SidebarInset,
-  SidebarProvider,
-} from "@/components/ui/sidebar";
-import { UserProvider } from "@/providers/user.provider";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import DashboardNavbar from "../modules/dashboard/DashboardNavbar";
 
 export default function DashboardLayout() {
   return (
-    <UserProvider>
-      <SidebarProvider>
-        <AppSidebar />
-        {/* <SidebarInset>
+    <SidebarProvider>
+      <AppSidebar />
+      {/* <SidebarInset>
           <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
             <SidebarTrigger className="-ml-1" />
             <Separator
@@ -23,10 +18,9 @@ export default function DashboardLayout() {
             <Outlet />
           </div>
         </SidebarInset> */}
-        <SidebarInset>
-          <DashboardNavbar />
-        </SidebarInset>
-      </SidebarProvider>
-    </UserProvider>
+      <SidebarInset>
+        <DashboardNavbar />
+      </SidebarInset>
+    </SidebarProvider>
   );
 }

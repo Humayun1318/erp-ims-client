@@ -204,6 +204,7 @@ import config from "@/config";
 import { GoogleLogo } from "@/assets/icons/GoogleLogo";
 import { role } from "@/constants/role";
 import { useAppDispatch } from "@/redux/hook";
+import { useUser } from "@/hooks/useUser";
 
 const registerSchema = z
   .object({
@@ -252,6 +253,7 @@ export function RegisterForm({
   const [register, { isLoading }] = useRegisterMutation();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const { refetch } = useUser();
 
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
@@ -279,19 +281,20 @@ export function RegisterForm({
 
       if (res.success) {
         dispatch(authApi.util.invalidateTags(["USER"]));
+
+        await refetch();
+
         toast.success("Account created successfully! Logging you in...", {
           id: toastId,
           position: "top-center",
         });
 
-        const { user } = res.data;
+        const userRole = res?.data?.user?.role;
 
-        if (user?.role === role.user) {
-          navigate("/user");
-        } else if (user?.role === role.admin) {
-          navigate("/admin");
+        if (userRole === role.admin) {
+          navigate("/admin", { replace: true });
         } else {
-          navigate("/user");
+          navigate("/user/dashboard", { replace: true });
         }
       }
     } catch (err: any) {

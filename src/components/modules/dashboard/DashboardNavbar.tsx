@@ -9,6 +9,7 @@ import { Outlet, useLocation, useNavigate } from "react-router";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import { getDashboardPageTitle } from "@/utils/getDashboardPageTitle";
+import { role } from "@/constants/role";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -59,7 +60,7 @@ export default function DashboardNavbar() {
     }
   };
   const pageTitle = getDashboardPageTitle(location.pathname);
-  const isAdmin = userData?.role === "admin";
+  const isAdmin = userData?.role === role.admin;
   return (
     <div>
       <header className="flex h-16 shrink-0 items-center justify-between gap-2 border-b px-4">

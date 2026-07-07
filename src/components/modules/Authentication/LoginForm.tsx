@@ -11,9 +11,9 @@ import {
 import { Input } from "@/components/ui/input";
 import config from "@/config";
 import { role } from "@/constants/role";
+import { useUser } from "@/hooks/useUser";
 import { cn } from "@/lib/utils";
-import { authApi, useLoginMutation } from "@/redux/features/auth/auth.api";
-import { useAppDispatch } from "@/redux/hook";
+import { useLoginMutation } from "@/redux/features/auth/auth.api";
 import { TRole } from "@/types";
 import { useEffect } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
@@ -26,7 +26,6 @@ export function LoginForm({
   ...props
 }: React.HTMLAttributes<HTMLDivElement> & { demoCredentials: string }) {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
 
   // form
   const form = useForm({
@@ -74,17 +73,18 @@ export function LoginForm({
       const res = await login(data).unwrap();
 
       if (res.success) {
-        dispatch(authApi.util.invalidateTags(["USER"]));
 
         toast.success("Logged in successfully", {
           id: toastId,
           position: "top-center",
         });
 
-        if ((res?.data?.user?.role as TRole) === role.user) {
-          navigate("/user");
+        if ((res?.data?.user?.role as TRole) === role.manager) {
+          navigate("/manager");
         } else if ((res?.data?.user?.role as TRole) === role.admin) {
           navigate("/admin");
+        } else if ((res?.data?.user?.role as TRole) === role.employee) {
+          navigate("/employee");
         }
       }
     } catch (err) {

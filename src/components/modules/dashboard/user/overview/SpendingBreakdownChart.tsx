@@ -9,7 +9,6 @@ import {
 } from "recharts";
 import { TrendingDown, DollarSign } from "lucide-react";
 import { useGetAllTransactionsQuery } from "@/redux/features/transactions/transactions.api";
-import { useUser } from "@/hooks/useUser";
 import { useMemo } from "react";
 
 const prepareSpendingDataFromTransactions = (transactions: any[], currency: string) => {
@@ -87,9 +86,7 @@ const renderCustomLabel = ({ cx, cy, midAngle, outerRadius, percent, name }: any
 
 const SpendingBreakdownChart = () => {
   const { data: transactionsData, isLoading, error } = useGetAllTransactionsQuery({ limit: 100 });
-  const { user: userData } = useUser();
-  
-  const userCurrency = userData?.currency || "USD";
+  const userCurrency = "USD";
   const transactions = transactionsData?.data || [];
   
   const { spendingData, totalExpenses } = useMemo(() => 

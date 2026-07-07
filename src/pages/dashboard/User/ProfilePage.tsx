@@ -29,10 +29,7 @@ export default function ProfilePage() {
           <ProfileInfoCard user={userData} />
 
           {/* Edit form */}
-          <UpdateProfileForm
-            currentName={userData.name}
-            currentAvatarUrl={userData.avatarUrl}
-          />
+          <UpdateProfileForm currentName={userData.name} />
         </>
       )}
     </div>

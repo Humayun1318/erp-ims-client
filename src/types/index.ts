@@ -25,7 +25,7 @@ export interface ISidebarItem {
   }[];
 }
 
-export type TRole = "admin" | "user";
+export type TRole = "ADMIN" | "MANAGER" | "EMPLOYEE";
 
 type ZodIssue = {
   code: string;
@@ -52,18 +52,14 @@ export interface IErrorResponse {
 }
 
 export interface IUser {
-  id: string;
+  _id: string;
   name: string;
   email: string;
-  avatarUrl: string | null;
-  role: "user" | "admin";
+  role: "ADMIN" | "MANAGER" | "EMPLOYEE";
   auths: {
     provider: string;
     providerId: string;
   }[];
-  status: "active" | "inactive" | "blocked";
-  currency: string;
-  timezone: string;
   isVerified: boolean;
   createdAt: string;
   updatedAt: string;
@@ -176,15 +172,5 @@ export interface CategoryOption {
   type: TransactionType;
 }
 
-// ─── Filter / Query params ────────────────────────────────────────────────────
+// ---------------------------------
 
-export interface TransactionFiltersState {
-  search: string;
-  type: TransactionType | "";
-  paymentMethod: PaymentMethod | "";
-  categoryId: string;
-  dateFrom: string;
-  dateTo: string;
-  sortBy: string;
-  sortOrder: "asc" | "desc";
-};

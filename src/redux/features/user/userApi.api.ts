@@ -4,7 +4,7 @@ export const userApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     updateProfile: builder.mutation({
       query: (userInfo) => ({
-        url: "/users/update-profile",
+        url: "/user/update-profile",
         method: "PATCH",
         data: userInfo,
       }),
@@ -13,7 +13,7 @@ export const userApi = baseApi.injectEndpoints({
 
     changePassword: builder.mutation({
       query: (passwordInfo) => ({
-        url: "/users/change-password",
+        url: "/user/change-password",
         method: "PATCH",
         data: passwordInfo,
       }),
@@ -30,7 +30,7 @@ export const userApi = baseApi.injectEndpoints({
 
     deleteAccount: builder.mutation({
       query: (password) => ({
-        url: "/users/delete-account",
+        url: "/user/delete-account",
         method: "DELETE",
         data: password,
       }),

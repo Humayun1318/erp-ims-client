@@ -38,11 +38,13 @@ export function CategoryTable({ data, onEdit, onDelete }: CategoryTableProps) {
 
         <TableBody>
           {!data || data.length === 0 ? (
-            <div className="border border-muted rounded-md py-16 flex items-center justify-center">
-              <p className="text-muted-foreground text-sm">
-                No categories found.
-              </p>
-            </div>
+            <TableRow>
+              <TableCell colSpan={6} className="text-center py-16">
+                <p className="text-muted-foreground text-sm">
+                  No categories found.
+                </p>
+              </TableCell>
+            </TableRow>
           ) : (
             data?.map((item, index) => (
               <TableRow key={item._id}>

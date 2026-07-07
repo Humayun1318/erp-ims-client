@@ -1,6 +1,7 @@
 export const role = {
-  admin: "admin",
-  user: "user",
+  admin: "ADMIN",
+  manager: "MANAGER",
+  employee: "EMPLOYEE",
 };
 
 export const FIELD_CLASS = "h-9 w-full";

@@ -1,17 +1,18 @@
 import App from "@/App";
 import DashboardLayout from "@/components/layout/DashboardLayout";
-import Login from "@/pages/Login";
-import Register from "@/pages/Register";
 import { generateRoutes } from "@/utils/generateRoutes";
 import { createBrowserRouter, Navigate } from "react-router";
 import { adminSidebarItems } from "./adminSidebarItems";
-import { userSidebarItems } from "./userSidebarItems";
 import { withAuth } from "@/utils/withAuth";
 import { role } from "@/constants/role";
 import { TRole } from "@/types";
 import Homepage from "@/pages/Homepage";
 import UnauthorizedPage from "@/pages/UnauthorizedPage";
 import NotFoundPage from "@/pages/NotFoundPage";
+import { managerSidebarItems } from "./manager.sidebar";
+import { employeeSidebarItems } from "./employee.sidebar";
+import Login from "@/pages/Login";
+import Register from "@/pages/Register";
 
 export const router = createBrowserRouter([
   {
@@ -33,11 +34,19 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    Component: withAuth(DashboardLayout, role.user as TRole),
-    path: "/user",
+    Component: withAuth(DashboardLayout, role.manager as TRole),
+    path: "/manager",
     children: [
-      { index: true, element: <Navigate to="/user/dashboard" /> },
-      ...generateRoutes(userSidebarItems),
+      { index: true, element: <Navigate to="/manager/dashboard" /> },
+      ...generateRoutes(managerSidebarItems),
+    ],
+  },
+  {
+    Component: withAuth(DashboardLayout, role.employee as TRole),
+    path: "/employee",
+    children: [
+      { index: true, element: <Navigate to="/employee/products" /> },
+      ...generateRoutes(employeeSidebarItems),
     ],
   },
   {

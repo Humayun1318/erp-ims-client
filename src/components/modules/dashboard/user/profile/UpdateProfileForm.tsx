@@ -36,7 +36,7 @@ type UpdateProfileValues = z.infer<typeof updateProfileSchema>;
 
 interface UpdateProfileFormProps {
   currentName: string;
-  currentAvatarUrl: string | null;
+  currentAvatarUrl?: string | null;
 }
 
 function getInitials(name: string) {
@@ -52,7 +52,7 @@ function getInitials(name: string) {
 
 export function UpdateProfileForm({
   currentName,
-  currentAvatarUrl,
+  currentAvatarUrl = null,
 }: UpdateProfileFormProps) {
   const [updateProfile, { isLoading }] = useUpdateProfileMutation();
 

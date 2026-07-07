@@ -2,13 +2,9 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { useGetTransactionSummaryQuery } from "@/redux/features/transactions/transactions.api";
 import { Wallet, TrendingUp, TrendingDown } from "lucide-react";
-import { useUser } from "@/hooks/useUser";
-
 const OverviewCards = () => {
   const { data, isLoading, error } = useGetTransactionSummaryQuery({});
-  const { user: userData } = useUser();
-  
-  const userCurrency = userData?.currency || "USD";
+  const userCurrency = "USD";
   const totalIncome = (data as any)?.income ?? 0;
   const totalExpense = (data as any)?.expense ?? 0;
   const netBalance = (data as any)?.balance ?? 0;

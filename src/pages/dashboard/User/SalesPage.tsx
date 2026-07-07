@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Plus, Search } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Plus, Search, TrendingUp, TrendingDown, ReceiptText } from "lucide-react";
 import { ITransaction } from "@/types";
 import { ReusablePagination } from "@/components/ReusablePagination";
 import { AddEditTransactionModal } from "@/components/modules/dashboard/user/transaction/AddEditTransactionModal";
@@ -36,6 +37,13 @@ export default function TransactionPage() {
 
   const transactions: ITransaction[] = Array.isArray(data?.data) ? data.data : [];
   const totalPages: number = data?.meta?.totalPages ?? 1;
+  const totalSales = transactions
+    .filter((item) => item.type === "income")
+    .reduce((sum, item) => sum + item.amount, 0);
+  const totalExpenses = transactions
+    .filter((item) => item.type === "expense")
+    .reduce((sum, item) => sum + item.amount, 0);
+  const latestTransactionCount = transactions.length;
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // ── Handlers ─────────────────────────────────────────────────────────────────
@@ -95,7 +103,7 @@ export default function TransactionPage() {
         </div>
         <Button onClick={openAdd} className="w-full sm:w-auto">
           <Plus className="h-4 w-4 mr-1.5" />
-          Add Transaction
+          Add Sale
         </Button>
       </div>
 
@@ -116,6 +124,42 @@ export default function TransactionPage() {
             Searching for: "{searchTerm}"
           </p>
         )}
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-3 mb-6">
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium flex items-center gap-2">
+              <TrendingUp className="h-4 w-4 text-emerald-500" />
+              Sales Value
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-2xl font-semibold">${totalSales.toFixed(2)}</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium flex items-center gap-2">
+              <TrendingDown className="h-4 w-4 text-rose-500" />
+              Expense Value
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-2xl font-semibold">${totalExpenses.toFixed(2)}</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium flex items-center gap-2">
+              <ReceiptText className="h-4 w-4 text-primary" />
+              Recent Entries
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-2xl font-semibold">{latestTransactionCount}</p>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Table */}
